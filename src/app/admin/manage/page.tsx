@@ -10,6 +10,10 @@ import AdminHeader from "@/components/AdminHeader";
 export default async function ManageKeysPage() {
   const session = await getSessionUser();
 
+  if (!session || session.user?.role !== "ADMIN") {
+    redirect("/login");
+  }
+
   // Get distinct combinations using groupBy
   const distinctKeys = await prisma.answerKey.groupBy({
     by: ['institute', 'paperType', 'set'],

@@ -1,30 +1,38 @@
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 import prisma from "@/lib/prisma";
 
 export async function getSessionUser() {
-  // Try to find the seeded admin user
-  let mockUser = await prisma.user.findFirst({
-    where: { email: "admin@upsc.com" },
+  // 1. Check if there is an active logged-in session (e.g., an Admin)
+  const session = await getServerSession(authOptions);
+  if (session) {
+    return session;
+  }
+
+  // 2. Otherwise, automatically fallback to a mock "Guest Candidate" (with USER role)
+  // to avoid requiring logins or OTP for standard exam evaluations
+  let guestUser = await prisma.user.findFirst({
+    where: { email: "guest@upsc.com" },
   });
 
-  // If no user exists, create a default guest admin
-  if (!mockUser) {
-    mockUser = await prisma.user.create({
+  if (!guestUser) {
+    guestUser = await prisma.user.create({
       data: {
-        id: "mock-admin-id",
-        name: "Guest Admin",
-        email: "admin@upsc.com",
-        password: "mock-password-not-needed",
-        role: "ADMIN",
+        id: "guest-candidate-id",
+        name: "Guest Candidate",
+        email: "guest@upsc.com",
+        password: "guest-password-not-needed",
+        role: "USER",
       },
     });
   }
 
   return {
     user: {
-      id: mockUser.id,
-      name: mockUser.name,
-      email: mockUser.email,
-      role: mockUser.role,
+      id: guestUser.id,
+      name: guestUser.name,
+      email: guestUser.email,
+      role: guestUser.role,
     },
   };
 }
