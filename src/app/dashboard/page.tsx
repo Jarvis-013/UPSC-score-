@@ -1,4 +1,5 @@
-import { getSessionUser } from "@/lib/getSession";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/authOptions";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
@@ -6,7 +7,11 @@ import prisma from "@/lib/prisma";
 import { FileText, Clock, ChevronRight, ArrowRight } from "lucide-react";
 
 export default async function DashboardPage() {
-  const session = await getSessionUser();
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/login");
+  }
 
   // Fetch user's existing attempts
   const attempts = await prisma.examAttempt.findMany({
