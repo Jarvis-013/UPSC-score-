@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/authOptions";
+import { getSessionUser } from "@/lib/getSession";
 import prisma from "@/lib/prisma";
 
-// Ensure only admins can access (for demonstration we allow anyone logged in, but you can check role)
 async function authorizeAdmin() {
-  const session = await getServerSession(authOptions);
+  const session = await getSessionUser();
   if (!session || session.user?.role !== "ADMIN") {
     return false;
   }

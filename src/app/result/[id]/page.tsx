@@ -1,14 +1,10 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/authOptions";
+import { getSessionUser } from "@/lib/getSession";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import ResultView from "./ResultView";
 
 export default async function ResultPage({ params }: { params: { id: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    redirect("/login");
-  }
+  const session = await getSessionUser();
 
   const { id } = await params;
 
@@ -16,7 +12,7 @@ export default async function ResultPage({ params }: { params: { id: string } })
     where: { id },
   });
 
-  if (!attempt || attempt.userId !== session.user?.id) {
+  if (!attempt) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">

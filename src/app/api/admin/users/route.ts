@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/authOptions";
+import { getSessionUser } from "@/lib/getSession";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 async function authorizeAdmin() {
-  const session = await getServerSession(authOptions);
+  const session = await getSessionUser();
   return session && session.user?.role === "ADMIN";
 }
 

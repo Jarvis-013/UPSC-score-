@@ -27,17 +27,17 @@ export default function Home() {
 
         <div className="mt-10 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
           <Link 
-            href="/login"
+            href="/dashboard"
             className="group flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-indigo-600/25 hover:-translate-y-0.5"
           >
             Start Evaluation
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link 
-            href="/signup"
+            href="/admin/manage"
             className="flex items-center justify-center bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-sm"
           >
-            Create Account
+            Admin Panel
           </Link>
         </div>
 

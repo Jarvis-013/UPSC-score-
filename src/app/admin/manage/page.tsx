@@ -1,5 +1,4 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/authOptions";
+import { getSessionUser } from "@/lib/getSession";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
@@ -9,11 +8,7 @@ import { Plus, LayoutDashboard, KeyRound } from "lucide-react";
 import AdminHeader from "@/components/AdminHeader";
 
 export default async function ManageKeysPage() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect("/login");
-  }
+  const session = await getSessionUser();
 
   // Get distinct combinations using groupBy
   const distinctKeys = await prisma.answerKey.groupBy({
