@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  attempts  ExamAttempt[]
+}
+
+model AnswerKey {
+  id          String   @id @default(cuid())
+  institute   String   // e.g. "Official", "VisionIAS"
+  paperType   String   // "GS" or "CSAT"
+  set         String   // "A", "B", "C", "D"
+  questionNum Int
+  answer      String   // "A", "B", "C", "D"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([institute, paperType, set, questionNum])
+}
+
+model ExamAttempt {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id])
+  paperType        String   // "GS" or "CSAT"
+  set              String   // "A", "B", "C", "D"
+  responses        String   // JSON stringified array of { questionNum, selectedAnswer }
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([userId, paperType, set])
+}
